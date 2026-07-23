@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * PCS GLOBAL MAP — Application Logic
+ * PCS GLOBAL MAP — Application Logic (v2.0)
  * Port Community Systems Interactive Dashboard
  * 
  * Author: Robert Richard das Neves Correia dos Santos
@@ -48,6 +48,22 @@
       africa: 'África',
       oceania: 'Oceania',
     },
+    statusColors: {
+      operational: '#22c55e',
+      implementing: '#f59e0b',
+      pilot: '#3b82f6',
+      discontinued: '#ef4444',
+    },
+    statusNames: {
+      operational: 'Operacional',
+      implementing: 'Em implantação',
+      pilot: 'Projeto piloto',
+      discontinued: 'Descontinuado',
+    },
+    typeNames: {
+      pcs: 'Port Community System',
+      single_window: 'Single Window',
+    },
     flyToDuration: 1.5,
     flyToZoom: 8,
   };
@@ -58,12 +74,16 @@
     filteredData: [],
     map: null,
     markers: {},
+    markerClusterGroup: null,
     activeRegion: 'all',
+    activeType: 'all',
+    activeStatus: 'all',
     searchQuery: '',
     activePcsId: null,
     tileLayer: null,
     currentTile: 'dark',
     sidebarCollapsed: false,
+    dataLoaded: false,
   };
 
   // ── DOM References ─────────────────────────────────────────
@@ -76,6 +96,8 @@
     sidebarToggle: $('#sidebarToggle'),
     searchInput: $('#searchInput'),
     regionFilters: $('#regionFilters'),
+    typeFilters: $('#typeFilters'),
+    statusFilters: $('#statusFilters'),
     pcsList: $('#pcsList'),
     pcsCount: $('#pcsCount'),
     map: $('#map'),
@@ -94,18 +116,22 @@
     viewMap: $('#viewMap'),
     viewSatellite: $('#viewSatellite'),
     mobileMenuBtn: $('#mobileMenuBtn'),
+    exportCsv: $('#exportCsv'),
+    exportJson: $('#exportJson'),
   };
 
   // ── Initialize ─────────────────────────────────────────────
   async function init() {
     try {
       await loadData();
+      validateCoordinates();
       initMap();
       renderMarkers();
       renderSidebar();
       updateStats();
       bindEvents();
       hideLoading();
+      state.dataLoaded = true;
     } catch (err) {
       console.error('Initialization error:', err);
       dom.loadingOverlay.innerHTML = `
@@ -124,6 +150,26 @@
     const json = await response.json();
     state.pcsData = json.pcs_systems || [];
     state.filteredData = [...state.pcsData];
+  }
+
+  // ── Coordinate Validation ─────────────────────────────────
+  function validateCoordinates() {
+    state.pcsData.forEach((pcs) => {
+      pcs._coordWarning = false;
+      if (typeof pcs.lat !== 'number' || typeof pcs.lng !== 'number') {
+        console.warn(`[COORD] ${pcs.name}: lat/lng não numérico`);
+        pcs._coordWarning = true;
+        return;
+      }
+      if (pcs.lat < -90 || pcs.lat > 90) {
+        console.warn(`[COORD] ${pcs.name}: latitude ${pcs.lat} fora do intervalo [-90, 90]`);
+        pcs._coordWarning = true;
+      }
+      if (pcs.lng < -180 || pcs.lng > 180) {
+        console.warn(`[COORD] ${pcs.name}: longitude ${pcs.lng} fora do intervalo [-180, 180]`);
+        pcs._coordWarning = true;
+      }
+    });
   }
 
   // ── Map Initialization ─────────────────────────────────────
@@ -145,6 +191,11 @@
 
     // Default tile layer
     setTileLayer('dark');
+
+    // Invalidate size after initial layout settles
+    setTimeout(() => {
+      state.map.invalidateSize();
+    }, 200);
   }
 
   function setTileLayer(type) {
@@ -152,22 +203,30 @@
       state.map.removeLayer(state.tileLayer);
     }
     const tileConfig = CONFIG.tiles[type];
-    state.tileLayer = L.tileLayer(tileConfig.url, {
+    const opts = {
       attribution: tileConfig.attribution,
-      subdomains: 'abcd',
       maxZoom: 19,
-    }).addTo(state.map);
+    };
+    // Only CARTO tiles use subdomains
+    if (type === 'dark') {
+      opts.subdomains = 'abcd';
+    }
+    state.tileLayer = L.tileLayer(tileConfig.url, opts).addTo(state.map);
     state.currentTile = type;
   }
 
   // ── Marker Creation ────────────────────────────────────────
   function createMarkerIcon(pcs) {
     const color = CONFIG.regionColors[pcs.region] || '#22d3ee';
+    const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
+    const isLocal = pcs.scope === 'local';
+
     return L.divIcon({
       className: `pcs-marker marker-${pcs.region}`,
       html: `
         <div class="pcs-marker-pulse" style="background: ${color}33;"></div>
-        <div class="pcs-marker-dot" style="background: ${color}; box-shadow: 0 0 12px ${color}80, 0 2px 6px rgba(0,0,0,0.3);"></div>
+        <div class="pcs-marker-dot" style="background: ${color}; box-shadow: 0 0 12px ${color}80, 0 2px 6px rgba(0,0,0,0.3); border-color: ${statusColor};" data-status="${pcs.status}"></div>
+        ${pcs._coordWarning ? '<div class="pcs-marker-warning">⚠</div>' : ''}
       `,
       iconSize: [14, 14],
       iconAnchor: [7, 7],
@@ -176,21 +235,44 @@
   }
 
   function renderMarkers() {
-    // Clear existing markers
-    Object.values(state.markers).forEach((m) => {
-      state.map.removeLayer(m);
-    });
+    // Remove existing cluster group
+    if (state.markerClusterGroup) {
+      state.map.removeLayer(state.markerClusterGroup);
+    }
+
     state.markers = {};
 
+    // Create marker cluster group
+    state.markerClusterGroup = L.markerClusterGroup({
+      maxClusterRadius: 45,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      iconCreateFunction: function (cluster) {
+        const count = cluster.getChildCount();
+        let size = 'small';
+        if (count > 10) size = 'medium';
+        if (count > 25) size = 'large';
+        return L.divIcon({
+          html: `<div class="cluster-inner">${count}</div>`,
+          className: `pcs-cluster pcs-cluster-${size}`,
+          iconSize: L.point(40, 40),
+        });
+      },
+    });
+
     state.filteredData.forEach((pcs) => {
+      // Skip entries with invalid coordinates
+      if (pcs._coordWarning) return;
+
       const marker = L.marker([pcs.lat, pcs.lng], {
         icon: createMarkerIcon(pcs),
         title: pcs.name,
       });
 
       marker.bindPopup(createPopupContent(pcs), {
-        maxWidth: 320,
-        minWidth: 260,
+        maxWidth: 340,
+        minWidth: 280,
         className: 'pcs-popup',
         closeButton: true,
       });
@@ -199,14 +281,33 @@
         selectPcs(pcs.id);
       });
 
-      marker.addTo(state.map);
+      state.markerClusterGroup.addLayer(marker);
       state.markers[pcs.id] = marker;
     });
+
+    state.map.addLayer(state.markerClusterGroup);
   }
 
   function createPopupContent(pcs) {
     const regionName = CONFIG.regionNames[pcs.region] || pcs.region;
     const color = CONFIG.regionColors[pcs.region] || '#22d3ee';
+    const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
+    const statusName = CONFIG.statusNames[pcs.status] || pcs.status || '—';
+    const typeName = CONFIG.typeNames[pcs.type] || pcs.type || '—';
+    const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
+
+    const fieldOrNull = (label, value) => {
+      if (!value || value === 'null') return `
+        <div class="popup-row">
+          <span class="popup-row-label">${label}:</span>
+          <span class="popup-row-value popup-null">N/D</span>
+        </div>`;
+      return `
+        <div class="popup-row">
+          <span class="popup-row-label">${label}:</span>
+          <span class="popup-row-value">${value}</span>
+        </div>`;
+    };
 
     return `
       <div class="popup-content">
@@ -215,33 +316,41 @@
             ${pcs.flag || '⚓'}
           </div>
           <div>
-            <div class="popup-title">${pcs.name}</div>
-            <div class="popup-subtitle">${pcs.port_city}, ${pcs.country}</div>
+            <div class="popup-title">${escapeHtml(pcs.name)}</div>
+            <div class="popup-subtitle">${escapeHtml(pcs.port_city)}, ${escapeHtml(pcs.country)}</div>
           </div>
         </div>
+        <div class="popup-badges">
+          <span class="popup-badge" style="background:${statusColor}20;color:${statusColor};border-color:${statusColor}40;">
+            <span class="popup-badge-dot" style="background:${statusColor};"></span> ${statusName}
+          </span>
+          <span class="popup-badge popup-badge-type">
+            ${typeIcon} ${typeName}
+          </span>
+          ${pcs.ipcsa_member ? '<span class="popup-badge popup-badge-ipcsa">✦ IPCSA</span>' : ''}
+        </div>
         <div class="popup-body">
+          ${fieldOrNull('Região', regionName)}
+          ${fieldOrNull('Operador', pcs.operator)}
+          ${fieldOrNull('Fundação', pcs.year_founded)}
+          ${fieldOrNull('Geração', pcs.pcs_generation ? pcs.pcs_generation + ' Geração' : null)}
+          ${fieldOrNull('Escopo', pcs.scope === 'national' ? '🌐 Nacional' : '📍 Local/Portuário')}
           <div class="popup-row">
-            <svg class="popup-row-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-            <span class="popup-row-label">Região:</span>
-            <span class="popup-row-value">${regionName}</span>
-          </div>
-          <div class="popup-row">
-            <svg class="popup-row-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-            <span class="popup-row-label">IPCSA:</span>
-            <span class="popup-row-value">${pcs.ipcsa_member ? '✅ Membro' : '—'}</span>
-          </div>
-          <div class="popup-row">
-            <svg class="popup-row-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
             <span class="popup-row-label">Coord.:</span>
-            <span class="popup-row-value" style="font-family: var(--font-mono); font-size: 11px;">${pcs.lat.toFixed(4)}°, ${pcs.lng.toFixed(4)}°</span>
+            <span class="popup-row-value" style="font-family: var(--font-mono); font-size: 11px;">
+              ${pcs.lat.toFixed(4)}°, ${pcs.lng.toFixed(4)}°
+            </span>
           </div>
-          <p style="font-size: 12px; color: #94a3b8; margin-top: 8px; line-height: 1.5;">${pcs.description}</p>
-          ${pcs.website ? `
-            <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-              Visitar Website
-            </a>
-          ` : ''}
+          <p class="popup-description">${escapeHtml(pcs.description)}</p>
+          <div class="popup-footer">
+            ${pcs.website ? `
+              <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                Visitar Website
+              </a>
+            ` : '<span class="popup-no-link">Link não disponível</span>'}
+            <span class="popup-source">${pcs.data_source || 'IPCSA'} · ${pcs.last_verified || '—'}</span>
+          </div>
         </div>
       </div>
     `;
@@ -258,7 +367,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
-          <p>Nenhum PCS encontrado para <strong>"${state.searchQuery}"</strong></p>
+          <p>Nenhum sistema encontrado para <strong>"${escapeHtml(state.searchQuery)}"</strong></p>
         </div>
       `;
       return;
@@ -272,14 +381,19 @@
       card.style.animationDelay = `${Math.min(index * 30, 300)}ms`;
       card.dataset.id = pcs.id;
 
+      const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
+      const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
+
       card.innerHTML = `
         <div class="pcs-card-icon">${pcs.flag || '⚓'}</div>
         <div class="pcs-card-info">
           <div class="pcs-card-name">${highlightMatch(pcs.name, state.searchQuery)}</div>
           <div class="pcs-card-location">${highlightMatch(pcs.port_city, state.searchQuery)}</div>
-          <div class="pcs-card-country">
+          <div class="pcs-card-meta">
             <span>${highlightMatch(pcs.country, state.searchQuery)}</span>
-            ${pcs.ipcsa_member ? '<span style="color: #22d3ee; margin-left: 4px;">· IPCSA</span>' : ''}
+            <span class="pcs-card-status" style="color:${statusColor};">●</span>
+            <span class="pcs-card-type">${typeIcon}</span>
+            ${pcs.ipcsa_member ? '<span style="color: #22d3ee;">IPCSA</span>' : ''}
           </div>
         </div>
       `;
@@ -296,13 +410,21 @@
   }
 
   function highlightMatch(text, query) {
-    if (!query) return text;
+    if (!query || !text) return escapeHtml(text || '');
+    const escaped = escapeHtml(text);
     const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
-    return text.replace(regex, '<mark style="background:rgba(34,211,238,0.25);color:#67e8f9;padding:0 1px;border-radius:2px;">$1</mark>');
+    return escaped.replace(regex, '<mark style="background:rgba(34,211,238,0.25);color:#67e8f9;padding:0 1px;border-radius:2px;">$1</mark>');
   }
 
   function escapeRegex(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   // ── PCS Selection ──────────────────────────────────────────
@@ -322,7 +444,10 @@
     // Open popup on map
     const marker = state.markers[id];
     if (marker) {
-      marker.openPopup();
+      // Bring marker to top of cluster if needed
+      state.markerClusterGroup.zoomToShowLayer(marker, () => {
+        marker.openPopup();
+      });
     }
   }
 
@@ -336,9 +461,22 @@
   function openDetailPanel(pcs) {
     const regionName = CONFIG.regionNames[pcs.region] || pcs.region;
     const color = CONFIG.regionColors[pcs.region] || '#22d3ee';
+    const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
+    const statusName = CONFIG.statusNames[pcs.status] || pcs.status || '—';
+    const typeName = CONFIG.typeNames[pcs.type] || pcs.type || '—';
+    const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
 
     dom.detailName.textContent = pcs.name;
     dom.detailLocation.textContent = `${pcs.port_city}, ${pcs.country}`;
+
+    const infoField = (label, value) => {
+      const display = (value && value !== 'null') ? value : '<span class="detail-null">N/D</span>';
+      return `
+        <div class="detail-info-item">
+          <div class="detail-info-label">${label}</div>
+          <div class="detail-info-value">${display}</div>
+        </div>`;
+    };
 
     dom.detailBody.innerHTML = `
       <div class="detail-section animate-fade-in">
@@ -353,34 +491,35 @@
           justify-content: center;
           font-size: 48px;
           margin-bottom: var(--space-lg);
-        ">${pcs.flag || '⚓'}</div>
+          position: relative;
+        ">
+          ${pcs.flag || '⚓'}
+          <div style="position:absolute;bottom:8px;right:10px;display:flex;gap:6px;">
+            <span class="popup-badge" style="background:${statusColor}20;color:${statusColor};border-color:${statusColor}40;font-size:10px;">
+              <span class="popup-badge-dot" style="background:${statusColor};"></span> ${statusName}
+            </span>
+            <span class="popup-badge popup-badge-type" style="font-size:10px;">${typeIcon} ${typeName}</span>
+          </div>
+        </div>
       </div>
 
       <div class="detail-section animate-fade-in" style="animation-delay: 80ms;">
         <div class="detail-section-title">Informações Gerais</div>
         <div class="detail-info-grid">
-          <div class="detail-info-item">
-            <div class="detail-info-label">País</div>
-            <div class="detail-info-value">${pcs.country}</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="detail-info-label">Região</div>
-            <div class="detail-info-value" style="color: ${color};">${regionName}</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="detail-info-label">Porto / Cidade</div>
-            <div class="detail-info-value">${pcs.port_city}</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="detail-info-label">Membro IPCSA</div>
-            <div class="detail-info-value">${pcs.ipcsa_member ? '✅ Sim' : '❌ Não'}</div>
-          </div>
+          ${infoField('País', pcs.country)}
+          ${infoField('Região', `<span style="color:${color};">${regionName}</span>`)}
+          ${infoField('Porto / Cidade', pcs.port_city)}
+          ${infoField('Membro IPCSA', pcs.ipcsa_member ? '✅ Sim' : '❌ Não')}
+          ${infoField('Operador', pcs.operator)}
+          ${infoField('Ano de Fundação', pcs.year_founded)}
+          ${infoField('Geração PCS', pcs.pcs_generation ? pcs.pcs_generation + ' Geração' : null)}
+          ${infoField('Escopo', pcs.scope === 'national' ? '🌐 Nacional' : '📍 Local/Portuário')}
         </div>
       </div>
 
       <div class="detail-section animate-fade-in" style="animation-delay: 160ms;">
         <div class="detail-section-title">Descrição</div>
-        <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${pcs.description}</p>
+        <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${escapeHtml(pcs.description)}</p>
       </div>
 
       <div class="detail-section animate-fade-in" style="animation-delay: 240ms;">
@@ -395,17 +534,21 @@
             <div class="detail-info-value" style="font-family: var(--font-mono); font-size: 12px;">${pcs.lng.toFixed(4)}°</div>
           </div>
         </div>
+        ${pcs._coordWarning ? '<p style="font-size:11px;color:#f59e0b;margin-top:8px;">⚠ Coordenada pode estar imprecisa</p>' : ''}
       </div>
 
-      ${pcs.website ? `
-        <div class="detail-section animate-fade-in" style="animation-delay: 320ms;">
-          <div class="detail-section-title">Links</div>
-          <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link" style="display:inline-flex; width:auto;">
+      <div class="detail-section animate-fade-in" style="animation-delay: 320ms;">
+        <div class="detail-section-title">Links e Fonte</div>
+        ${pcs.website ? `
+          <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link" style="display:inline-flex; width:auto; margin-bottom: 8px;">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:14px; height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
             Website Oficial
           </a>
-        </div>
-      ` : ''}
+        ` : '<p style="font-size:12px;color:var(--slate-500);">Link não disponível</p>'}
+        <p style="font-size:11px;color:var(--slate-500);margin-top:4px;">
+          Fonte: ${pcs.data_source || 'IPCSA Directory'} · Verificado: ${pcs.last_verified || '—'}
+        </p>
+      </div>
     `;
 
     dom.detailPanel.classList.add('open');
@@ -421,10 +564,18 @@
   function filterData() {
     const query = state.searchQuery.toLowerCase().trim();
     const region = state.activeRegion;
+    const type = state.activeType;
+    const status = state.activeStatus;
 
     state.filteredData = state.pcsData.filter((pcs) => {
       // Region filter
       if (region !== 'all' && pcs.region !== region) return false;
+
+      // Type filter
+      if (type !== 'all' && pcs.type !== type) return false;
+
+      // Status filter
+      if (status !== 'all' && pcs.status !== status) return false;
 
       // Search filter
       if (query) {
@@ -433,6 +584,7 @@
           pcs.port_city,
           pcs.country,
           pcs.description,
+          pcs.operator,
         ].map((f) => (f || '').toLowerCase());
 
         return searchFields.some((field) => field.includes(query));
@@ -453,6 +605,9 @@
     const regions = new Set(state.pcsData.map((p) => p.region)).size;
     const ipcsa = state.pcsData.filter((p) => p.ipcsa_member).length;
 
+    // Remove skeleton class from all stat elements
+    $$('.skeleton-text').forEach((el) => el.classList.remove('skeleton-text'));
+
     animateCounter(dom.statTotal, total);
     animateCounter(dom.statCountries, countries);
     animateCounter(dom.statIpcsa, ipcsa);
@@ -468,6 +623,10 @@
     const regions = new Set(state.filteredData.map((p) => p.region)).size;
     const ipcsa = state.filteredData.filter((p) => p.ipcsa_member).length;
 
+    // Update both top bar and floating stats
+    dom.statTotal.textContent = total;
+    dom.statCountries.textContent = countries;
+    dom.statIpcsa.textContent = ipcsa;
     dom.statsTotal.textContent = total;
     dom.statsCountries.textContent = countries;
     dom.statsRegions.textContent = regions;
@@ -505,6 +664,59 @@
     }, 800);
   }
 
+  // ── Export Functions ────────────────────────────────────────
+  function exportCsv() {
+    const data = state.filteredData;
+    if (data.length === 0) return;
+
+    const headers = ['Nome', 'Porto/Cidade', 'País', 'Região', 'Tipo', 'Status', 'Operador', 'Ano', 'Geração', 'Escopo', 'IPCSA', 'Latitude', 'Longitude', 'Website', 'Descrição'];
+    const rows = data.map((pcs) => [
+      pcs.name,
+      pcs.port_city,
+      pcs.country,
+      CONFIG.regionNames[pcs.region] || pcs.region,
+      pcs.type === 'pcs' ? 'PCS' : 'Single Window',
+      CONFIG.statusNames[pcs.status] || pcs.status,
+      pcs.operator || '',
+      pcs.year_founded || '',
+      pcs.pcs_generation || '',
+      pcs.scope === 'national' ? 'Nacional' : 'Local',
+      pcs.ipcsa_member ? 'Sim' : 'Não',
+      pcs.lat,
+      pcs.lng,
+      pcs.website || '',
+      pcs.description,
+    ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+    const csv = [headers.join(','), ...rows].join('\n');
+    downloadFile(csv, 'pcs_global_data.csv', 'text/csv;charset=utf-8;');
+  }
+
+  function exportJson() {
+    const data = state.filteredData;
+    if (data.length === 0) return;
+
+    const cleanData = data.map((pcs) => {
+      const { _coordWarning, ...rest } = pcs;
+      return rest;
+    });
+
+    const json = JSON.stringify({ exported_at: new Date().toISOString(), total: cleanData.length, systems: cleanData }, null, 2);
+    downloadFile(json, 'pcs_global_data.json', 'application/json');
+  }
+
+  function downloadFile(content, filename, mimeType) {
+    const blob = new Blob(['\uFEFF' + content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   // ── Event Binding ──────────────────────────────────────────
   function bindEvents() {
     // Search
@@ -521,7 +733,7 @@
       const region = chip.dataset.region;
       state.activeRegion = region;
 
-      $$('.filter-chip').forEach((c) => c.classList.remove('active'));
+      dom.regionFilters.querySelectorAll('.filter-chip').forEach((c) => c.classList.remove('active'));
       chip.classList.add('active');
 
       filterData();
@@ -532,6 +744,28 @@
       } else {
         state.map.flyTo(CONFIG.map.center, CONFIG.map.zoom, { duration: 1 });
       }
+    });
+
+    // Type Filters
+    dom.typeFilters.addEventListener('click', (e) => {
+      const chip = e.target.closest('.filter-chip');
+      if (!chip) return;
+
+      state.activeType = chip.dataset.type;
+      dom.typeFilters.querySelectorAll('.filter-chip').forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      filterData();
+    });
+
+    // Status Filters
+    dom.statusFilters.addEventListener('click', (e) => {
+      const chip = e.target.closest('.filter-chip');
+      if (!chip) return;
+
+      state.activeStatus = chip.dataset.status;
+      dom.statusFilters.querySelectorAll('.filter-chip').forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      filterData();
     });
 
     // Sidebar Toggle
@@ -553,6 +787,10 @@
       dom.viewMap.classList.remove('active');
     });
 
+    // Export Buttons
+    dom.exportCsv.addEventListener('click', exportCsv);
+    dom.exportJson.addEventListener('click', exportJson);
+
     // Mobile Menu
     dom.mobileMenuBtn.addEventListener('click', () => {
       dom.sidebar.classList.toggle('open');
@@ -564,6 +802,11 @@
         dom.sidebar.classList.remove('open');
       }
     });
+
+    // Window resize → invalidate map size
+    window.addEventListener('resize', debounce(() => {
+      state.map.invalidateSize();
+    }, 150));
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
