@@ -1,4 +1,4 @@
-# 🌐 PCS Global Map — Port Community Systems Dashboard
+# 🌐 PCS Global Map - Port Community Systems Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-brightgreen)](https://pages.github.com/)
@@ -129,7 +129,7 @@ Port Community System - Mapa/
 A base de dados está localizada em [`data/pcs_locations.json`](data/pcs_locations.json) e contém **42 Port Community Systems** distribuídos em **6 regiões** e **29+ países**.
 
 Os dados foram compilados a partir de:
-- [IPCSA — International Port Community Systems Association](https://ipcsa.international/)
+- [IPCSA - International Port Community Systems Association](https://ipcsa.international/)
 - Publicações acadêmicas sobre sistemas portuários comunitários
 - Websites oficiais dos PCS listados
 
@@ -166,7 +166,7 @@ Os dados foram compilados a partir de:
 
 ## 📚 Referências
 
-- IPCSA — International Port Community Systems Association. Disponível em: <https://ipcsa.international/>
+- IPCSA - International Port Community Systems Association. Disponível em: <https://ipcsa.international/>
 - TIJAN, E. et al. *Port Community Systems: A Systematic Literature Review*. Maritime Policy & Management, 2019.
 - LONG, A. *Port Community Systems*. World Customs Journal, v. 3, n. 1, 2009.
 
@@ -180,7 +180,7 @@ Este projeto é distribuído sob a licença **MIT**. Consulte o arquivo `LICENSE
 
 <div align="center">
 
-**⚓ PCS Global Map** — Pesquisa e Desenvolvimento em Logística Portuária
+**⚓ PCS Global Map** - Pesquisa e Desenvolvimento em Logística Portuária
 
 *CILIP · CENEP · 2026*
 
