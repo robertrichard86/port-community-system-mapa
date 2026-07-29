@@ -196,6 +196,20 @@
     setTimeout(() => {
       state.map.invalidateSize();
     }, 200);
+
+    // Disable marker transitions during zoom to prevent drift
+    state.map.on('zoomanim', () => {
+      document.querySelectorAll('.pcs-marker-dot').forEach((el) => {
+        el.style.transition = 'none';
+      });
+    });
+    state.map.on('zoomend', () => {
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.pcs-marker-dot').forEach((el) => {
+          el.style.transition = '';
+        });
+      });
+    });
   }
 
   function setTileLayer(type) {
@@ -271,8 +285,9 @@
       });
 
       marker.bindPopup(createPopupContent(pcs), {
-        maxWidth: 340,
+        maxWidth: 380,
         minWidth: 280,
+        maxHeight: 420,
         className: 'pcs-popup',
         closeButton: true,
       });
@@ -342,6 +357,24 @@
             </span>
           </div>
           <p class="popup-description">${escapeHtml(pcs.description)}</p>
+          ${pcs.processos ? `
+            <div class="popup-extra-section">
+              <span class="popup-row-label" style="font-weight:600;color:var(--cyan-300);">📋 Processos:</span>
+              <p class="popup-extra-text">${escapeHtml(pcs.processos)}</p>
+            </div>
+          ` : ''}
+          ${pcs.governanca ? `
+            <div class="popup-extra-section">
+              <span class="popup-row-label" style="font-weight:600;color:var(--cyan-300);">🏛️ Governança:</span>
+              <p class="popup-extra-text">${escapeHtml(pcs.governanca)}</p>
+            </div>
+          ` : ''}
+          ${pcs.tecnologia ? `
+            <div class="popup-extra-section">
+              <span class="popup-row-label" style="font-weight:600;color:var(--cyan-300);">💻 Tecnologia:</span>
+              <p class="popup-extra-text">${escapeHtml(pcs.tecnologia)}</p>
+            </div>
+          ` : ''}
           <div class="popup-footer">
             ${pcs.website ? `
               <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link">
@@ -522,7 +555,28 @@
         <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${escapeHtml(pcs.description)}</p>
       </div>
 
+      ${pcs.processos ? `
+      <div class="detail-section animate-fade-in" style="animation-delay: 200ms;">
+        <div class="detail-section-title">📋 Processos</div>
+        <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${escapeHtml(pcs.processos)}</p>
+      </div>
+      ` : ''}
+
+      ${pcs.governanca ? `
       <div class="detail-section animate-fade-in" style="animation-delay: 240ms;">
+        <div class="detail-section-title">🏛️ Governança</div>
+        <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${escapeHtml(pcs.governanca)}</p>
+      </div>
+      ` : ''}
+
+      ${pcs.tecnologia ? `
+      <div class="detail-section animate-fade-in" style="animation-delay: 280ms;">
+        <div class="detail-section-title">💻 Tecnologia</div>
+        <p style="font-size: 13px; color: var(--slate-300); line-height: 1.7;">${escapeHtml(pcs.tecnologia)}</p>
+      </div>
+      ` : ''}
+
+      <div class="detail-section animate-fade-in" style="animation-delay: 360ms;">
         <div class="detail-section-title">Coordenadas Geográficas</div>
         <div class="detail-info-grid">
           <div class="detail-info-item">
@@ -537,7 +591,7 @@
         ${pcs._coordWarning ? '<p style="font-size:11px;color:#f59e0b;margin-top:8px;">⚠ Coordenada pode estar imprecisa</p>' : ''}
       </div>
 
-      <div class="detail-section animate-fade-in" style="animation-delay: 320ms;">
+      <div class="detail-section animate-fade-in" style="animation-delay: 400ms;">
         <div class="detail-section-title">Links e Fonte</div>
         ${pcs.website ? `
           <a href="${pcs.website}" target="_blank" rel="noopener noreferrer" class="popup-link" style="display:inline-flex; width:auto; margin-bottom: 8px;">
@@ -669,7 +723,7 @@
     const data = state.filteredData;
     if (data.length === 0) return;
 
-    const headers = ['Nome', 'Porto/Cidade', 'País', 'Região', 'Tipo', 'Status', 'Operador', 'Ano', 'Geração', 'Escopo', 'IPCSA', 'Latitude', 'Longitude', 'Website', 'Descrição'];
+    const headers = ['Nome', 'Porto/Cidade', 'País', 'Região', 'Tipo', 'Status', 'Operador', 'Ano', 'Geração', 'Escopo', 'IPCSA', 'Latitude', 'Longitude', 'Website', 'Descrição', 'Processos', 'Governança', 'Tecnologia'];
     const rows = data.map((pcs) => [
       pcs.name,
       pcs.port_city,
@@ -686,6 +740,9 @@
       pcs.lng,
       pcs.website || '',
       pcs.description,
+      pcs.processos || '',
+      pcs.governanca || '',
+      pcs.tecnologia || '',
     ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
     const csv = [headers.join(','), ...rows].join('\n');

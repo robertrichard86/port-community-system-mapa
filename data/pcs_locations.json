@@ -3,7 +3,7 @@
     "title": "Global Port Community Systems Directory",
     "description": "Comprehensive dataset of Port Community Systems (PCS) and Single Window platforms worldwide, compiled from IPCSA membership data and public sources.",
     "source": "IPCSA (International Port Community Systems Association) - https://ipcsa.international/",
-    "last_updated": "2026-07-23",
+    "last_updated": "2026-07-28",
     "total_entries": 46,
     "author": "Robert Richard das Neves Correia dos Santos",
     "institution": "CILIP",
@@ -29,7 +29,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Digitaliza os processos centrais dos portos neerlandeses (marítimos e fluviais): notificações obrigatórias à Capitania do Porto e a órgãos governamentais, troca de dados entre empresas e gestão de direitos e acesso a dados; atende mais de 4.700 empresas em toda a cadeia logística portuária dos Países Baixos.",
+      "governanca": "Organização sem fins lucrativos (non-profit) que atua de forma neutra entre os elos da comunidade portuária, funcionando tanto como empresa de TI quanto como prestadora de serviços logísticos para todos os portos neerlandeses.",
+      "tecnologia": "Port Community System nacional com gestão de identidade e acesso (Identity & Access Management) e infraestrutura digital de dados que conecta clientes existentes, novas plataformas, fornecedores de software e o ecossistema logístico internacional ('hub de dados')."
     },
     {
       "id": "pcs-002",
@@ -50,7 +53,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Opera o Port Community System do Porto de Hamburgo e o Cargo Community System (FAIR@Link) dos aeroportos de Frankfurt e Hamburgo; oferece também soluções de despacho de cargas (CargoSoft) e desembaraço aduaneiro (ZODIAK, integrado ao sistema alemão ATLAS e a Suíça, Áustria, Bélgica e Países Baixos).",
+      "governanca": "Empresa privada alemã de plataformas e software para logística, em operação desde 1982, atendendo mais de 2.800 empresas em toda a Europa (casas comerciais, indústrias, despachantes, companhias aéreas, armadores, agentes e autoridades).",
+      "tecnologia": "Centros de dados próprios de última geração, com comunicação eletrônica entre empresas e autoridades para planejamento e execução de processos de transporte."
     },
     {
       "id": "pcs-003",
@@ -71,7 +77,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Opera o Port Community System em todos os portos franceses, com sede em Le Havre, e também atua no exterior.",
+      "governanca": "Parceria público-privada entre a Comunidade Portuária de Le Havre, a Autoridade Portuária de Le Havre e a Alfândega Francesa; reconhecida como referência técnica por organismos como Comissão Europeia, IAPH, ONU, Organização Mundial das Alfândegas e Banco Mundial, entre outros.",
+      "tecnologia": ""
     },
     {
       "id": "pcs-004",
@@ -92,7 +101,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Opera o Port Community System de Barcelona e também desenvolveu redes de PCS em Alexandria (Egito) e Buenos Aires (Argentina).",
+      "governanca": "Parceria privada entre a Comunidade Portuária de Barcelona, a Autoridade Portuária de Barcelona, instituições financeiras (La Caixa, Banc Sabadell) e a Câmara de Comércio de Barcelona.",
+      "tecnologia": ""
     },
     {
       "id": "pcs-005",
@@ -113,7 +125,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "O Destin8 opera em 17 portos do Reino Unido e mais de 50 pontos de desembaraço no interior, cobrindo cerca de 75% do tráfego de contêineres do país; conecta linhas de navegação/agentes, autoridades portuárias, operadores de terminal, alfândega, despachantes e transportadores rodoviários/ferroviários.",
+      "governanca": "Operado pela MCP plc, empresa privada britânica também envolvida em iniciativas de facilitação de comércio junto a organismos como SITPRO, a Organização Mundial das Alfândegas e a IAPH.",
+      "tecnologia": "Uso extensivo de Electronic Data Interchange (EDI) para troca eletrônica de dados entre todos os setores portuários."
     },
     {
       "id": "pcs-006",
@@ -134,7 +149,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Opera desde 1973 a Bremer Hafentelematik (primeiro Port Community System do mundo), cobrindo os portos de Bremen, Bremerhaven e Cuxhaven, além da solução para o JadeWeserPort Wilhelmshaven (desde 2009); atende mais de 2.700 clientes, incluindo portos, operadores de terminal, despachantes, operadoras ferroviárias, armadores e autoridades públicas.",
+      "governanca": "Empresa privada alemã (dbh Logistics IT AG), com cerca de 250 colaboradores, especializada em aduaneiro/comércio exterior, compliance e logística de transporte.",
+      "tecnologia": "Centros de dados próprios certificados ISO/IEC 27001, com produtos de software próprios e serviços de TI gerenciados (Managed Services)."
     },
     {
       "id": "pcs-007",
@@ -155,7 +173,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Em conjunto com a plataforma C-point, viabiliza a comunicação digital entre todos os atores do porto de Antuérpia-Bruges, apoiando atividades administrativas e operacionais do dia a dia, com uso extensivo de mensagens eletrônicas padronizadas internacionalmente.",
+      "governanca": "Iniciativa ligada ao Porto de Antuérpia-Bruges: a NxtPort fornece os dados por meio da plataforma técnica, em conjunto com o C-point, que reúne as aplicações da comunidade portuária.",
+      "tecnologia": "Plataforma de compartilhamento de dados (data-sharing platform) com foco em mensagens eletrônicas padronizadas e em confidencialidade/segurança da informação."
     },
     {
       "id": "pcs-008",
@@ -176,7 +197,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Integra os sistemas do porto de Valência às plataformas tecnológicas usadas pelos principais agentes logísticos, atendendo tráfegos de granel líquido e sólido, carga geral convencional, contêineres e passageiros.",
+      "governanca": "Ligado à Autoridade Portuária de Valência (Valenciaport), com gestão voltada à inovação em TI, qualidade de serviço, desenvolvimento sustentável e capacitação da comunidade portuária.",
+      "tecnologia": "Pioneiro no sistema portuário espanhol na introdução de EDI (Electronic Data Interchange) e no lançamento de um sistema de informação comunitário (SIC); a plataforma Valenciaportpcs.net representa a evolução dessa estratégia de inovação tecnológica."
     },
     {
       "id": "pcs-009",
@@ -197,7 +221,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Como Community Systems Provider (CSP), conecta linhas de navegação, portos, despachantes de carga e transportadores rodoviários à Receita Aduaneira do Reino Unido (HMRC), viabilizando o desembaraço aduaneiro.",
+      "governanca": "Empresa privada britânica (Community Network Services), fundada em 1986, atuando nos setores de logística marítima e aérea.",
+      "tecnologia": "Sistemas dedicados de controle de inventário (inventory control systems), operando em Southampton, Tilbury, Porto de Londres, Heathrow, Gatwick, Manchester, Birmingham, Immingham, Belfast e Portsmouth."
     },
     {
       "id": "pcs-010",
@@ -218,7 +245,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Conecta 13 comunidades logísticas com mais de 10.000 usuários diários, agilizando a troca de dados de carga entre agentes públicos e privados; portfólio inclui Ci5, AP+, AirPort+, Inland+ e M-customs, cobrindo portos, aeroportos e transporte interior na França e no exterior.",
+      "governanca": "Empresa privada francesa com mais de 35 anos de atuação no desenho e implantação de Port Community Systems.",
+      "tecnologia": "Certificação ISO 27001 (Gestão de Segurança da Informação); serviços de auditoria/consultoria, integração B2B, gestão de mudança e suporte a usuários."
     },
     {
       "id": "pcs-011",
@@ -239,7 +269,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-012",
@@ -260,7 +293,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-013",
@@ -281,7 +317,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-014",
@@ -302,7 +341,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "PCS da Autoridade Portuária da Baía de Algeciras (APBA), atualmente em transição de um modelo de janela única (single window) para um modelo de serviços de valor agregado.",
+      "governanca": "Operado pela APBA, organização pública que administra os portos de Algeciras e Tarifa; a autoridade vem migrando do papel tradicional de gestora de infraestrutura para o de orquestradora do ecossistema portuário.",
+      "tecnologia": ""
     },
     {
       "id": "pcs-015",
@@ -323,7 +365,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-016",
@@ -344,7 +389,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-017",
@@ -365,7 +413,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-018",
@@ -386,7 +437,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-019",
@@ -407,7 +461,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-020",
@@ -428,7 +485,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-021",
@@ -449,7 +509,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "A operadora (Kale Logistics) oferece soluções que vão de sistemas internos de automação empresarial (ERP) a 'Community Solutions' que permitem comunicação e transação eletrônica entre os elos da cadeia logística; entre suas soluções estão o UPLIFT (primeiro Cargo Community System multimodal da Índia) e o GMAX (Airport Cargo Community System).",
+      "governanca": "Empresa privada indiana (Kale Logistics Solutions), fornecedora global de soluções de TI para o setor de logística.",
+      "tecnologia": "Soluções próprias de Community System e ERP; destaque para o Container Digital Exchange, implantado no porto de Tuticorin."
     },
     {
       "id": "pcs-022",
@@ -470,7 +533,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-023",
@@ -491,7 +557,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-024",
@@ -512,7 +581,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-025",
@@ -533,7 +605,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-026",
@@ -554,7 +629,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Oferece janela única (single window) com serviços digitais de ponta a ponta para despachantes, transportadores, empresas de zona franca, agentes de linhas aéreas/marítimas e proprietários de carga, incluindo movimentação marítima e de carga, desembaraço aduaneiro, transporte, pagamentos e serviços de zona franca.",
+      "governanca": "Integra os principais stakeholders do comércio e logística de Dubai: DP World (operador global de terminais), a Alfândega de Dubai e a Economic Zones World (operadora de zonas econômicas, incluindo a Jebel Ali Free Zone).",
+      "tecnologia": "Plataforma digital de janela única (single window), com serviços de ponta a ponta e estratégia centrada no usuário."
     },
     {
       "id": "pcs-027",
@@ -575,7 +653,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Oferece ponto único de acesso e informações em tempo real para linhas de navegação, agentes, alfândega, importadores, exportadores, operadores de terminal e demais agências governamentais.",
+      "governanca": "Introduzido pela Abu Dhabi Ports em dezembro de 2014; é o primeiro Port Community System desenvolvido especificamente para os Emirados Árabes Unidos.",
+      "tecnologia": "Desenvolvido segundo padrões internacionais avançados, com informações digitais em tempo real (24/7) usadas como ferramenta analítica de apoio à decisão estratégica e tática."
     },
     {
       "id": "pcs-028",
@@ -596,7 +677,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-029",
@@ -617,7 +701,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-030",
@@ -638,7 +725,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Janela única nacional de comércio exterior que integra portos, aeroportos, estações terrestres e armazéns alfandegados, harmonizando processos B2B e cobrindo fluxos de carga, informação relacionada à carga e pagamentos.",
+      "governanca": "Plataforma nacional marroquina que integra os sistemas de informação de janelas únicas, alfândegas, autoridades portuárias e aeroportuárias, operadores de terminal, agentes de navegação, companhias aéreas, despachantes, importadores e exportadores.",
+      "tecnologia": "Plataforma eletrônica interoperável baseada em EDI (Electronic Data Interchange), com foco em processos sem papel (paperless) de importação/exportação e integração ponta a ponta da cadeia de suprimentos em nível nacional e regional."
     },
     {
       "id": "pcs-031",
@@ -659,7 +749,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-032",
@@ -680,7 +773,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-033",
@@ -701,7 +797,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-034",
@@ -722,7 +821,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-035",
@@ -743,7 +845,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-036",
@@ -764,7 +869,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "Permite que clientes dos portos marítimo e aéreo (despachantes, agentes de navegação/companhias aéreas, transportadoras) acessem online os serviços dos portos, do terminal de carga aérea, da autoridade portuária e da alfândega, com pagamentos eletrônicos associados.",
+      "governanca": "Sistema nacional de comunidade portuária de Djibuti (DPCS), com o objetivo declarado de reduzir ineficiências e aumentar a produtividade da comunidade.",
+      "tecnologia": "Plataforma eletrônica com pagamentos eletrônicos (e-payments) integrados, voltada à conformidade com padrões internacionais."
     },
     {
       "id": "pcs-037",
@@ -785,7 +893,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-038",
@@ -806,7 +917,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-039",
@@ -827,7 +941,10 @@
       "pcs_generation": "3rd",
       "scope": "local",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-040",
@@ -848,7 +965,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-041",
@@ -869,7 +989,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-042",
@@ -890,7 +1013,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-043",
@@ -911,7 +1037,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-044",
@@ -932,7 +1061,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-045",
@@ -953,7 +1085,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "IPCSA Directory",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     },
     {
       "id": "pcs-046",
@@ -974,7 +1109,10 @@
       "pcs_generation": "3rd",
       "scope": "national",
       "data_source": "Public records",
-      "last_verified": "2026-07-23"
+      "last_verified": "2026-07-23",
+      "processos": "",
+      "governanca": "",
+      "tecnologia": ""
     }
   ]
 }
