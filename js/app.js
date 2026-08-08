@@ -62,7 +62,6 @@
     },
     typeNames: {
       pcs: 'Port Community System',
-      single_window: 'Single Window',
     },
     flyToDuration: 1.5,
     flyToZoom: 8,
@@ -76,7 +75,6 @@
     markers: {},
     markerClusterGroup: null,
     activeRegion: 'all',
-    activeType: 'all',
     activeStatus: 'all',
     searchQuery: '',
     activePcsId: null,
@@ -96,7 +94,6 @@
     sidebarToggle: $('#sidebarToggle'),
     searchInput: $('#searchInput'),
     regionFilters: $('#regionFilters'),
-    typeFilters: $('#typeFilters'),
     statusFilters: $('#statusFilters'),
     pcsList: $('#pcsList'),
     pcsCount: $('#pcsCount'),
@@ -267,8 +264,29 @@
         let size = 'small';
         if (count > 10) size = 'medium';
         if (count > 25) size = 'large';
+
+        // Determine dominant region color from child markers
+        const children = cluster.getAllChildMarkers();
+        const regionCounts = {};
+        children.forEach(m => {
+          const title = m.options.title;
+          const pcs = state.pcsData.find(p => p.name === title);
+          if (pcs && pcs.region) {
+            regionCounts[pcs.region] = (regionCounts[pcs.region] || 0) + 1;
+          }
+        });
+        let dominantRegion = 'europe';
+        let maxCount = 0;
+        Object.entries(regionCounts).forEach(([region, cnt]) => {
+          if (cnt > maxCount) {
+            maxCount = cnt;
+            dominantRegion = region;
+          }
+        });
+        const color = CONFIG.regionColors[dominantRegion] || '#22d3ee';
+
         return L.divIcon({
-          html: `<div class="cluster-inner">${count}</div>`,
+          html: `<div class="cluster-inner" style="background: ${color}b3; border-color: ${color}e6; box-shadow: 0 0 16px ${color}66;">${count}</div>`,
           className: `pcs-cluster pcs-cluster-${size}`,
           iconSize: L.point(40, 40),
         });
@@ -309,7 +327,7 @@
     const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
     const statusName = CONFIG.statusNames[pcs.status] || pcs.status || '—';
     const typeName = CONFIG.typeNames[pcs.type] || pcs.type || '—';
-    const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
+    const typeIcon = '⚓';
 
     const fieldOrNull = (label, value) => {
       if (!value || value === 'null') return `
@@ -415,7 +433,6 @@
       card.dataset.id = pcs.id;
 
       const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
-      const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
 
       card.innerHTML = `
         <div class="pcs-card-icon">${pcs.flag || '⚓'}</div>
@@ -425,7 +442,7 @@
           <div class="pcs-card-meta">
             <span>${highlightMatch(pcs.country, state.searchQuery)}</span>
             <span class="pcs-card-status" style="color:${statusColor};">●</span>
-            <span class="pcs-card-type">${typeIcon}</span>
+            <span class="pcs-card-type">⚓</span>
             ${pcs.ipcsa_member ? '<span style="color: #22d3ee;">IPCSA</span>' : ''}
           </div>
         </div>
@@ -497,7 +514,7 @@
     const statusColor = CONFIG.statusColors[pcs.status] || '#22c55e';
     const statusName = CONFIG.statusNames[pcs.status] || pcs.status || '—';
     const typeName = CONFIG.typeNames[pcs.type] || pcs.type || '—';
-    const typeIcon = pcs.type === 'single_window' ? '🏛️' : '⚓';
+    const typeIcon = '⚓';
 
     dom.detailName.textContent = pcs.name;
     dom.detailLocation.textContent = `${pcs.port_city}, ${pcs.country}`;
@@ -618,15 +635,11 @@
   function filterData() {
     const query = state.searchQuery.toLowerCase().trim();
     const region = state.activeRegion;
-    const type = state.activeType;
     const status = state.activeStatus;
 
     state.filteredData = state.pcsData.filter((pcs) => {
       // Region filter
       if (region !== 'all' && pcs.region !== region) return false;
-
-      // Type filter
-      if (type !== 'all' && pcs.type !== type) return false;
 
       // Status filter
       if (status !== 'all' && pcs.status !== status) return false;
@@ -729,7 +742,7 @@
       pcs.port_city,
       pcs.country,
       CONFIG.regionNames[pcs.region] || pcs.region,
-      pcs.type === 'pcs' ? 'PCS' : 'Single Window',
+      'PCS',
       CONFIG.statusNames[pcs.status] || pcs.status,
       pcs.operator || '',
       pcs.year_founded || '',
@@ -801,17 +814,6 @@
       } else {
         state.map.flyTo(CONFIG.map.center, CONFIG.map.zoom, { duration: 1 });
       }
-    });
-
-    // Type Filters
-    dom.typeFilters.addEventListener('click', (e) => {
-      const chip = e.target.closest('.filter-chip');
-      if (!chip) return;
-
-      state.activeType = chip.dataset.type;
-      dom.typeFilters.querySelectorAll('.filter-chip').forEach((c) => c.classList.remove('active'));
-      chip.classList.add('active');
-      filterData();
     });
 
     // Status Filters

@@ -7,7 +7,7 @@
   <meta name="keywords" content="Port Community System, PCS, IPCSA, Maritime, Logistics, Ports, Dashboard, Map">
   <meta name="author" content="Robert Richard das Neves Correia dos Santos">
 
-  <title>PCS Global Map — Port Community Systems Dashboard</title>
+  <title>PCS Global Map | Port Community Systems Dashboard</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚓</text></svg>">
@@ -70,24 +70,15 @@
       <!-- Region Filters -->
       <div class="sidebar-filters">
         <div class="filter-group">
-          <span class="filter-label">Regiões</span>
+          <span class="filter-label">Continentes</span>
           <div class="filter-chips" id="regionFilters">
-            <button class="filter-chip active" data-region="all">Todas</button>
-            <button class="filter-chip" data-region="europe">🌍 Europa</button>
-            <button class="filter-chip" data-region="asia">🌏 Ásia</button>
-            <button class="filter-chip" data-region="americas">🌎 Américas</button>
-            <button class="filter-chip" data-region="middle-east">🕌 Oriente Médio</button>
-            <button class="filter-chip" data-region="africa">🌍 África</button>
-            <button class="filter-chip" data-region="oceania">🦘 Oceania</button>
-          </div>
-        </div>
-        <!-- Type Filter -->
-        <div class="filter-group">
-          <span class="filter-label">Tipo</span>
-          <div class="filter-chips" id="typeFilters">
-            <button class="filter-chip active" data-type="all">Todos</button>
-            <button class="filter-chip" data-type="pcs">⚓ PCS</button>
-            <button class="filter-chip" data-type="single_window">🏛️ Single Window</button>
+            <button class="filter-chip active" data-region="all">Todos</button>
+            <button class="filter-chip" data-region="europe"><span class="chip-color-dot" style="background:#22d3ee;"></span> Europa</button>
+            <button class="filter-chip" data-region="asia"><span class="chip-color-dot" style="background:#a78bfa;"></span> Ásia</button>
+            <button class="filter-chip" data-region="americas"><span class="chip-color-dot" style="background:#34d399;"></span> Américas</button>
+            <button class="filter-chip" data-region="middle-east"><span class="chip-color-dot" style="background:#fbbf24;"></span> Oriente Médio</button>
+            <button class="filter-chip" data-region="africa"><span class="chip-color-dot" style="background:#fb923c;"></span> África</button>
+            <button class="filter-chip" data-region="oceania"><span class="chip-color-dot" style="background:#f472b6;"></span> Oceania</button>
           </div>
         </div>
         <!-- Status Filter -->
@@ -95,9 +86,9 @@
           <span class="filter-label">Status</span>
           <div class="filter-chips" id="statusFilters">
             <button class="filter-chip active" data-status="all">Todos</button>
-            <button class="filter-chip" data-status="operational">🟢 Operacional</button>
-            <button class="filter-chip" data-status="implementing">🟡 Implantação</button>
-            <button class="filter-chip" data-status="pilot">🔵 Piloto</button>
+            <button class="filter-chip" data-status="operational">✅ Operacional</button>
+            <button class="filter-chip" data-status="implementing">🚧 Implantação</button>
+            <button class="filter-chip" data-status="pilot">🧪 Piloto</button>
           </div>
         </div>
       </div>
@@ -212,7 +203,7 @@
 
         <!-- Map Legend -->
         <div class="map-legend" id="mapLegend">
-          <h4>Regiões</h4>
+          <h4>Continentes</h4>
           <div class="legend-item"><span class="legend-dot europe"></span> Europa</div>
           <div class="legend-item"><span class="legend-dot asia"></span> Ásia</div>
           <div class="legend-item"><span class="legend-dot americas"></span> Américas</div>
@@ -227,7 +218,6 @@
           <hr class="legend-divider">
           <h4>Tipo</h4>
           <div class="legend-item"><span class="legend-type-icon">⚓</span> PCS (Port Community System)</div>
-          <div class="legend-item"><span class="legend-type-icon">🏛️</span> Single Window</div>
         </div>
 
         <!-- Data Source Attribution -->

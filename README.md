@@ -1,7 +1,7 @@
 # 🌐 PCS Global Map - Port Community Systems Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-brightgreen)](https://pages.github.com/)
+[![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-brightgreen)](https://robertrichard86.github.io/port-community-system-mapa/)
 [![IPCSA](https://img.shields.io/badge/data-IPCSA-0ea5e9)](https://ipcsa.international/)
 
 > **Dashboard interativo de mapeamento global dos Port Community Systems (PCS).**  
@@ -29,9 +29,9 @@ A definição é alinhada com a **IPCSA (International Port Community Systems As
 Este dashboard interativo foi desenvolvido como ferramenta de pesquisa acadêmica com os seguintes objetivos:
 
 1. **Mapear geograficamente** os Port Community Systems ao redor do mundo
-2. **Visualizar a distribuição global** dos PCS por região e país
+2. **Visualizar a distribuição global** dos PCS por continente e país
 3. **Fornecer dados estruturados** sobre cada sistema (nome, localização, coordenadas, links)
-4. **Facilitar análises comparativas** entre PCS de diferentes regiões
+4. **Facilitar análises comparativas** entre PCS de diferentes continentes
 5. **Servir como recurso acadêmico** para pesquisadores da área de logística portuária
 
 ---
@@ -40,14 +40,16 @@ Este dashboard interativo foi desenvolvido como ferramenta de pesquisa acadêmic
 
 | Funcionalidade | Descrição |
 |---|---|
-| 🗺️ **Mapa Interativo** | Visualização global com marcadores por região usando Leaflet.js |
+| 🗺️ **Mapa Interativo** | Visualização global com marcadores coloridos por continente usando Leaflet.js |
 | 🔍 **Busca em Tempo Real** | Filtragem instantânea por nome do PCS, porto ou país |
-| 🏷️ **Filtros por Região** | Europa, Ásia, Américas, Oriente Médio, África e Oceania |
-| 📊 **Estatísticas Dinâmicas** | Contadores animados de PCS, países, regiões e membros IPCSA |
+| 🏷️ **Filtros por Continente** | Europa, Ásia, Américas, Oriente Médio, África e Oceania (com cores) |
+| 📊 **Estatísticas Dinâmicas** | Contadores animados de PCS, países, continentes e membros IPCSA |
 | 📋 **Painel de Detalhes** | Informações completas ao clicar em um PCS |
 | 🌓 **Mapa / Satélite** | Alternância entre estilo dark e imagens de satélite |
 | 📱 **Design Responsivo** | Compatível com desktop, tablet e smartphone |
 | ⌨️ **Atalhos de Teclado** | `Ctrl+K` para busca rápida, `Esc` para fechar painéis |
+| 📈 **Filtros por Status** | Operacional, Em implantação e Projeto piloto |
+| 📥 **Exportação de Dados** | Download em CSV e JSON dos dados filtrados |
 
 ---
 
@@ -62,7 +64,7 @@ Este dashboard interativo foi desenvolvido como ferramenta de pesquisa acadêmic
 
 ```bash
 # Clone o repositório
-git clone https://github.com/SEU_USUARIO/port-community-system-mapa.git
+git clone https://github.com/robertrichard86/port-community-system-mapa.git
 cd port-community-system-mapa
 
 # Inicie o servidor local
@@ -105,7 +107,7 @@ Port Community System - Mapa/
 ├── js/
 │   └── app.js              # Lógica principal da aplicação
 └── data/
-    └── pcs_locations.json  # Base de dados dos PCS (42 entradas)
+    └── pcs_locations.json  # Base de dados dos PCS (32 entradas)
 ```
 
 ---
@@ -118,6 +120,7 @@ Port Community System - Mapa/
 | **CSS3** | Design system com variáveis CSS, glassmorphism, animações e responsividade |
 | **JavaScript (ES6+)** | Lógica da aplicação, renderização dinâmica e interatividade |
 | **[Leaflet.js](https://leafletjs.com/) v1.9.4** | Biblioteca open-source para mapas interativos |
+| **[Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster)** | Agrupamento inteligente de marcadores por proximidade |
 | **[CARTO Basemaps](https://carto.com/)** | Tiles do mapa estilo dark |
 | **[Esri / ArcGIS](https://www.esri.com/)** | Tiles de imagem de satélite |
 | **[Google Fonts (Inter)](https://fonts.google.com/specimen/Inter)** | Tipografia moderna da interface |
@@ -126,7 +129,7 @@ Port Community System - Mapa/
 
 ## 📊 Dados
 
-A base de dados está localizada em [`data/pcs_locations.json`](data/pcs_locations.json) e contém **42 Port Community Systems** distribuídos em **6 regiões** e **29+ países**.
+A base de dados está localizada em [`data/pcs_locations.json`](data/pcs_locations.json) e contém **32 Port Community Systems** distribuídos em **6 continentes** e **20+ países**.
 
 Os dados foram compilados a partir de:
 - [IPCSA - International Port Community Systems Association](https://ipcsa.international/)
@@ -147,9 +150,24 @@ Os dados foram compilados a partir de:
   "website": "https://www.portbase.com/",
   "description": "National Port Community System for all Dutch seaports.",
   "flag": "🇳🇱",
-  "ipcsa_member": true
+  "ipcsa_member": true,
+  "type": "pcs",
+  "status": "operational",
+  "operator": "PPP",
+  "year_founded": 2009
 }
 ```
+
+### Continentes e suas cores no mapa:
+
+| Continente | Cor |
+|---|---|
+| 🟦 Europa | `#22d3ee` (Cyan) |
+| 🟣 Ásia | `#a78bfa` (Violeta) |
+| 🟩 Américas | `#34d399` (Esmeralda) |
+| 🟨 Oriente Médio | `#fbbf24` (Âmbar) |
+| 🟧 África | `#fb923c` (Laranja) |
+| 🩷 Oceania | `#f472b6` (Rosa) |
 
 ---
 
