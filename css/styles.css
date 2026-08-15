@@ -843,10 +843,10 @@ a:hover {
 /* ── Detail Panel (right side) ────────────────────────────── */
 .detail-panel {
   position: absolute;
-  top: 0;
+  top: var(--header-height);
   right: 0;
   width: var(--panel-width);
-  height: 100%;
+  height: calc(100% - var(--header-height));
   background: rgba(10, 22, 40, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
