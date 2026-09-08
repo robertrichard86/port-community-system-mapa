@@ -24,8 +24,8 @@
     },
     tiles: {
       dark: {
-        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://carto.com/">CARTO</a>',
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       },
       satellite: {
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -218,12 +218,16 @@
       attribution: tileConfig.attribution,
       maxZoom: 19,
     };
-    // Only CARTO tiles use subdomains
-    if (type === 'dark') {
-      opts.subdomains = 'abcd';
-    }
     state.tileLayer = L.tileLayer(tileConfig.url, opts).addTo(state.map);
     state.currentTile = type;
+
+    // Toggle CSS dark filter for OSM tiles (dark mode)
+    const container = state.map.getContainer();
+    if (type === 'dark') {
+      container.classList.add('dark-tiles');
+    } else {
+      container.classList.remove('dark-tiles');
+    }
   }
 
   // ── Marker Creation ────────────────────────────────────────

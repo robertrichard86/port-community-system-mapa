@@ -657,6 +657,11 @@ a:hover {
   color: var(--slate-400) !important;
 }
 
+/* Dark Mode Tile Filter — inverts standard OSM tiles to create a dark theme */
+.dark-tiles .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 /* ── Custom Map Markers ───────────────────────────────────── */
 .pcs-marker {
   position: relative;
